@@ -1,10 +1,13 @@
 package com.cms.demo.controller;
 import jakarta.validation.Valid;
 import com.cms.demo.dto.UserDto;
-import com.cms.demo.entity.User;
+import com.cms.demo.model.Complaint;
+import com.cms.demo.model.User;
+import com.cms.demo.service.ComplaintService;
 import com.cms.demo.service.UserService;
-import com.cms.demo.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +16,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 
 @Controller
 public class AuthController {
@@ -23,12 +29,7 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // handler method to handle home page request
-    @GetMapping("/index")
-    public String home() {
-        return "index";
-    }
-
+    
     // handler method to handle user registration form request
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -43,14 +44,15 @@ public class AuthController {
     public String registration(@Valid @ModelAttribute("user") UserDto userDto,
                                BindingResult result,
                                Model model) {
-        User existingUser = userService.findUserByEmail(userDto.getEmail());
-
-        if (existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()) {
+        User existingUser = userService.findByUsername(userDto.getUsername());
+        System.out.println(existingUser);
+        if (existingUser != null && existingUser.getEmail() != null && existingUser.getUsername() != null && !existingUser.getEmail().isEmpty()) {
             result.rejectValue("email", null,
                     "There is already an account registered with the same email");
         }
 
         if (result.hasErrors()) {
+            System.out.println(result.getErrorCount());
             model.addAttribute("user", userDto);
             return "/register";
         }
@@ -67,9 +69,18 @@ public class AuthController {
         return "users";
     }
 
+    
+
     // handler method to handle login request
     @GetMapping("/login")
     public String login() {
         return "login";
     }
+
+    @GetMapping("/logout")
+    public String logout() {
+        return "index";
+    }
+    
+    
 }

@@ -1,8 +1,9 @@
 package com.cms.demo.service;
 
 import com.cms.demo.dto.UserDto;
-import com.cms.demo.entity.Role;
-import com.cms.demo.entity.User;
+import com.cms.demo.model.Role;
+import com.cms.demo.model.RoleType;
+import com.cms.demo.model.User;
 import com.cms.demo.repository.RoleRepository;
 import com.cms.demo.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,12 +27,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUser(UserDto userDto) {
         User user = new User();
+        user.setUsername(userDto.getUsername());
         user.setName(userDto.getFirstName() + " " + userDto.getLastName());
         user.setEmail(userDto.getEmail());
         //encrypt the password using spring security
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        Role role = roleRepository.findByName("ROLE_ADMIN");
+        Role role = roleRepository.findByName(RoleType.ROLE_USER);
         if (role == null) {
             role = checkRoleExist();
         }
@@ -41,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     private Role checkRoleExist() {
         Role role = new Role();
-        role.setName("ROLE_ADMIN");
+        role.setName(RoleType.ROLE_USER);
         return roleRepository.save(role);
     }
 
@@ -63,6 +65,13 @@ public class UserServiceImpl implements UserService {
         userDto.setFirstName(name[0]);
         userDto.setLastName(name[1]);
         userDto.setEmail(user.getEmail());
+        userDto.setUsername(user.getUsername());
         return userDto;
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        
+        return userRepository.findByUsername(username);
     }
 }

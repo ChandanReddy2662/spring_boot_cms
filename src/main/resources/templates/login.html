@@ -13,6 +13,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
+            position: relative;
         }
         .login-container {
             max-width: 400px;
@@ -58,9 +60,26 @@
     </style>
 </head>
 <body>
-
+    <nav class="navbar z-3 w-100 navbar-expand-lg navbar-dark bg-dark shadow-lg position-fixed top-0 left-0 right-0">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">Complaint Management System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light me-2" th:href="@{/index    }">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn me-2" th:href="@{/register}">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 <!-- Login Form Container -->
-<div class="login-container text-center">
+<div class="login-container text-center mt">
     <h2 class="mb-4">Welcome Back</h2>
 
     <!-- Error Messages -->
